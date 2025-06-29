@@ -12,7 +12,7 @@
     
     <title>{{title}}</title>
 </head>
-<body>
+<body class="min-h-screen flex flex-col bg-gray-900 text-white">
     <!-- header -->
     <header class="text-gray-400 bg-gray-900 body-font">
         <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
@@ -40,9 +40,10 @@
         </div>
       </header>
 
-      {% block body %}
-
-      {% endblock %}
+      <main class="flex-grow">
+        {% block body %}
+        {% endblock %}
+      </main>
 
       <footer class="text-gray-400 bg-gray-900 body-font">
         <div class="container px-5 py-8 mx-auto flex items-center sm:flex-row flex-col">

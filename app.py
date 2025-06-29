@@ -6,9 +6,13 @@ from flask_pymongo import PyMongo
 from flask_pymongo import ObjectId
 import random
 from functools import wraps
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 app = Flask(__name__)
-app.config["MONGO_URI"] = "mongodb://localhost:27017/ADBMS_Project"
+app.config["MONGO_URI"] =  os.getenv('MONGO_URI')
 
 mongo = PyMongo(app)
 bcrypt = Bcrypt(app)
