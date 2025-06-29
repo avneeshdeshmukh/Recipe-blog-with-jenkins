@@ -12,7 +12,12 @@ import os
 load_dotenv()
 
 app = Flask(__name__)
-app.config["MONGO_URI"] =  os.getenv('MONGO_URI')
+
+@app.context_processor
+def inject_request():
+    return dict(request=request)
+
+app.config["MONGO_URI"] = os.getenv('MONGO_URI')
 
 mongo = PyMongo(app)
 bcrypt = Bcrypt(app)
@@ -49,7 +54,7 @@ def home():
         recipes = mongo.db.Recipe.find()
         user_data = mongo.db.UserDetails.find_one({"email": email})
 
-        return render_template('home.html', recipes=recipes, user=current_user, user_data=user_data)
+        return render_template('home.html', recipes=recipes, user=current_user, user_data=user_data, title="Home")
     else:
         recipes = mongo.db.Recipe.find()
         return render_template('home.html', recipes=recipes, user=current_user, title='Home')
@@ -166,17 +171,9 @@ def AboutUs():
     return render_template('about_us.html', user=current_user, title='About Us')
 
 
-@app.route('/developer/<name>')
-def developer(name):
-    match name:
-        case 'mihika':
-            return render_template('mihika.html', user=current_user)
-        case 'chaitanya':
-            return render_template('chaitanya.html', user=current_user)
-        case 'rutuja':
-            return render_template('rutuja.html', user=current_user)
-        case 'kedar':
-            return render_template('kedar.html', user=current_user)
+@app.route('/developer/')
+def developer():
+    return render_template('dev.html', user=current_user)
 
 
 @app.route('/edit_recipe/<blog_id>', methods=['GET', 'POST'])
@@ -228,5 +225,4 @@ def logout():
 
 
 if __name__ == "__main__":
-
-    app.run(debug=True)
+    app.run(debug=True, port=5050)
