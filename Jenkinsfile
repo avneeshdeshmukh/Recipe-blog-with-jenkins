@@ -22,17 +22,21 @@ pipeline {
             }
         }
 
-        stage('Run Unit Tests') {
+        stage('Build Docker Image') {
             steps {
-                sh 'pip3 install -r requirements.txt'
-                sh 'python3 test.py'
+                sh 'docker-compose build'
             }
         }
 
-        stage('Build & Deploy Docker Compose') {
+        stage('Run Unit Tests (Inside Docker)') {
             steps {
-                sh 'docker-compose down'
-                sh 'docker-compose up -d --build'
+                sh 'docker-compose run --rm web pytest test.py'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh 'docker-compose up -d'
             }
         }
     }
