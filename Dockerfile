@@ -1,14 +1,26 @@
-FROM jenkins/jenkins:lts
+# Use official Python image
+FROM python:3.10-slim
 
-# Switch to the root user to install software
-USER root
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
-# Install Python and other necessary tools
-RUN apt-get update && apt-get install -y \
-    python3 \
-    python3-pip \
-    git \
-    && rm -rf /var/lib/apt/lists/*
+# Set work directory
+WORKDIR /app
 
-# Switch back to the jenkins user
-USER jenkins
+# Install system dependencies
+RUN apt-get update && apt-get install -y build-essential
+
+# Install Python dependencies
+COPY requirements.txt .
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+# Copy project files
+COPY . .
+
+# Expose port
+EXPOSE 5050
+
+# Run the Flask app
+CMD ["python", "app.py"]
